@@ -2,6 +2,8 @@
 	import { Line } from 'svelte-chartjs';
 	import { registerables, Chart, type ChartData } from 'chart.js';
 	import 'chartjs-adapter-date-fns';
+
+	Chart.defaults.color = '#fff';
 	Chart.register(...registerables);
 
 	import type { SupplyPageData } from '$lib/types';
@@ -32,13 +34,11 @@
 	}
 
 	const lineData: ChartData<'line', (number | Point)[], unknown> = {
-		// labels: data.supply.map(({ blockHeight }) => blockHeight.toString()),
 		datasets: [
 			{
 				label: data.infos.name,
-				backgroundColor: 'rgba(225, 204,230, .3)',
-				borderColor: 'rgb(205, 130, 158)',
-				pointBorderColor: 'rgb(0, 0, 0)',
+				borderColor: '#ff0080',
+				pointBorderColor: '#fff',
 				pointBackgroundColor: 'rgb(255, 255, 255)',
 				pointBorderWidth: 3,
 				pointHoverBackgroundColor: 'rgb(250, 0, 0)',
@@ -52,26 +52,24 @@
 	};
 </script>
 
-<div>
-	<p>{data.params.network} / {data.params.asset}</p>
-	<div class="container">
-		<Line
-			data={lineData}
-			options={{
-				responsive: true,
-				scales: {
-					x: {
-						grid: {
-							display: false
-						},
-						stacked: true,
-						type: 'time',
-						time: {
-							unit: 'week'
-						}
+<div class="container">
+	<p class="title is-3 has-text-centered has-text-white">Supply for {data.infos.name}</p>
+	<Line
+		data={lineData}
+		options={{
+			responsive: true,
+			scales: {
+				x: {
+					grid: {
+						display: false
+					},
+					stacked: true,
+					type: 'time',
+					time: {
+						unit: 'week'
 					}
 				}
-			}}
-		/>
-	</div>
+			}
+		}}
+	/>
 </div>
