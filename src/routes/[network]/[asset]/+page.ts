@@ -38,3 +38,4 @@ export const load = async ({ params }: { params: SupplyPageParams }): Promise<Su
 }
 
 export const ssr = false
+export const csr = true
