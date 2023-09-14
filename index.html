@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="./favicon.png" />
+		<meta name="viewport" content="width=device-width" />
+		
+		<link rel="modulepreload" href="./_app/immutable/entry/start.c1e56e8e.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/scheduler.ed5df3a2.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/singletons.f2f19bc7.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/control.f5b05b5f.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.cadc590d.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/index.6c567307.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.ea34ace5.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.bd8c1bba.js">
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">  <h1 data-svelte-h="svelte-yyjjjs">Welcome to SvelteKit</h1> <p data-svelte-h="svelte-jl9sbz">Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p> 
+			
+			<script>
+				{
+					__sveltekit_q73jqs = {
+						assets: "/liquidsupply",
+						base: new URL(".", location).pathname.slice(0, -1),
+						env: {}
+					};
+
+					const element = document.currentScript.parentElement;
+
+					const data = [null,null];
+
+					Promise.all([
+						import("./_app/immutable/entry/start.c1e56e8e.js"),
+						import("./_app/immutable/entry/app.cadc590d.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 2],
+							data,
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>
