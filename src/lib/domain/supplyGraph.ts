@@ -1,67 +1,61 @@
 import type { AssetChainTransaction } from './transaction';
 
 export type SupplyGraph = Array<{
-  blockHeight: number;
-  blockTime: number;
-  txs: {
-    txID: string;
-    supplyModifier: number; // < 0 for burn tx, > 0 for issuances transactions
-  }[];
+	blockHeight: number;
+	blockTime: number;
+	txs: {
+		txID: string;
+		supplyModifier: number; // < 0 for burn tx, > 0 for issuances transactions
+	}[];
 }>;
 
-export function makeSupplyGraph(
-  transactions: AssetChainTransaction[]
-): SupplyGraph {
-  const heightTxs = new Map<
-    number,
-    { txID: string; supplyModifier: number }[]
-  >();
+export function makeSupplyGraph(transactions: AssetChainTransaction[]): SupplyGraph {
+	const heightTxs = new Map<number, { txID: string; supplyModifier: number }[]>();
+	const blockTimes = new Map<number, number>();
 
-  const blockTimes = new Map<number, number>();
+	for (const tx of transactions) {
+		const height = tx.blockHeight;
 
-  for (const tx of transactions) {
-    const height = tx.blockHeight;
+		if (!heightTxs.has(height)) {
+			heightTxs.set(height, []);
+		}
 
-    if (!heightTxs.has(height)) {
-      heightTxs.set(height, []);
-    }
+		const txs = heightTxs.get(height) || [];
 
-    const txs = heightTxs.get(height) || [];
+		txs.push({
+			txID: tx.txID,
+			supplyModifier: computeModifier(tx)
+		});
 
-    txs.push({
-      txID: tx.txID,
-      supplyModifier: computeModifier(tx),
-    });
+		blockTimes.set(height, tx.blockTime);
+		heightTxs.set(height, txs);
+	}
 
-    blockTimes.set(height, tx.blockTime);
-    heightTxs.set(height, txs);
-  }
+	const supplyGraph: SupplyGraph = [];
 
-  const supplyGraph: SupplyGraph = [];
+	for (const [height, txs] of heightTxs) {
+		supplyGraph.push({
+			blockHeight: height,
+			blockTime: blockTimes.get(height) || -1,
+			txs
+		});
+	}
 
-  for (const [height, txs] of heightTxs) {
-    supplyGraph.push({
-      blockHeight: height,
-      blockTime: blockTimes.get(height) || -1,
-      txs,
-    });
-  }
-
-  // sort by block height (0 -> h_max)
-  supplyGraph.sort((a, b) => a.blockHeight - b.blockHeight);
-  return supplyGraph;
+	// sort by block height (0 -> h_max)
+	supplyGraph.sort((a, b) => a.blockHeight - b.blockHeight);
+	return supplyGraph;
 }
 
 function computeModifier(tx: AssetChainTransaction): number {
-  let modifier = 0;
+	let modifier = 0;
 
-  for (const issuance of tx.issuances) {
-    modifier += issuance.assetAmount;
-  }
+	for (const issuance of tx.issuances) {
+		modifier += issuance.assetAmount;
+	}
 
-  for (const burn of tx.burnOutputs) {
-    modifier -= burn.amount;
-  }
+	for (const burn of tx.burnOutputs) {
+		modifier -= burn.amount;
+	}
 
-  return modifier;
+	return modifier;
 }

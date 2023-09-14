@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Line } from 'svelte-chartjs';
 	import { registerables, Chart, type ChartData } from 'chart.js';
+	import 'chartjs-adapter-date-fns';
 	Chart.register(...registerables);
 
 	import type { SupplyPageData } from '$lib/types';
@@ -12,39 +13,40 @@
 	function makeSupplyY(supply: SupplyGraph) {
 		const supplyY = [];
 
-		for (const { txs } of supply) {
+		for (const { txs, blockTime } of supply) {
 			const addSupply = txs.reduce((acc, { supplyModifier }) => {
 				return acc + supplyModifier;
 			}, 0);
 
 			let lastSupply = 0;
 			if (supplyY.length > 0) {
-				lastSupply = supplyY[supplyY.length - 1];
+				lastSupply = supplyY[supplyY.length - 1].y;
 			}
 
-			supplyY.push(lastSupply + addSupply);
+			supplyY.push({
+				x: blockTime * 1000,
+				y: lastSupply + addSupply / 10 ** data.infos.precision
+			});
 		}
 		return supplyY;
 	}
 
-	const lineData: ChartData<"line", (number | Point)[], unknown> = {
-		labels: data.supply.map((x) => new Date(x.blockTime * 1000).toLocaleDateString()),
+	const lineData: ChartData<'line', (number | Point)[], unknown> = {
+		// labels: data.supply.map(({ blockHeight }) => blockHeight.toString()),
 		datasets: [
 			{
-				label: data.params.asset,
-				fill: true,
+				label: data.infos.name,
 				backgroundColor: 'rgba(225, 204,230, .3)',
 				borderColor: 'rgb(205, 130, 158)',
-				pointBorderColor: 'rgb(205, 130,1 58)',
+				pointBorderColor: 'rgb(0, 0, 0)',
 				pointBackgroundColor: 'rgb(255, 255, 255)',
-				pointBorderWidth: 10,
-				pointHoverRadius: 5,
-				pointHoverBackgroundColor: 'rgb(0, 0, 0)',
-				pointHoverBorderColor: 'rgba(220, 220, 220,1)',
-				pointHoverBorderWidth: 2,
+				pointBorderWidth: 3,
+				pointHoverBackgroundColor: 'rgb(250, 0, 0)',
+				pointHoverBorderColor: 'rgb(205, 130, 158)',
+				pointHoverBorderWidth: 5,
 				pointRadius: 1,
-				pointHitRadius: 10,
-				data: makeSupplyY(data.supply)
+				data: makeSupplyY(data.supply),
+				tension: 0
 			}
 		]
 	};
@@ -53,6 +55,23 @@
 <div>
 	<p>{data.params.network} / {data.params.asset}</p>
 	<div class="container">
-		<Line data={lineData} options={{ responsive: true }} />
+		<Line
+			data={lineData}
+			options={{
+				responsive: true,
+				scales: {
+					x: {
+						grid: {
+							display: false
+						},
+						stacked: true,
+						type: 'time',
+						time: {
+							unit: 'week'
+						}
+					}
+				}
+			}}
+		/>
 	</div>
 </div>

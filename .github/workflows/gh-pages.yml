@@ -1,6 +1,6 @@
 name: GH Pages
 
-on: 
+on:
   push:
     branches: [main]
 
@@ -8,8 +8,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Use Node 16
@@ -23,13 +22,12 @@ jobs:
       - name: Build app
         run: yarn build
 
-      -
-        name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         if: success()
         uses: crazy-max/ghaction-github-pages@v2
         with:
           target_branch: gh-pages
-          build_dir: build 
+          build_dir: build
           verbose: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
