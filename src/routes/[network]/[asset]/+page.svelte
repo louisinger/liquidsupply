@@ -33,6 +33,8 @@
 		return supplyY;
 	}
 
+	const supplyValues = makeSupplyY(data.supply);
+
 	const lineData: ChartData<'line', (number | Point)[], unknown> = {
 		datasets: [
 			{
@@ -45,7 +47,7 @@
 				pointHoverBorderColor: 'rgb(205, 130, 158)',
 				pointHoverBorderWidth: 5,
 				pointRadius: 1,
-				data: makeSupplyY(data.supply),
+				data: supplyValues,
 				tension: 0
 			}
 		]
@@ -54,6 +56,10 @@
 
 <div class="container">
 	<p class="title is-3 has-text-centered has-text-white">Supply for {data.infos.name}</p>
+	<p class="subtitle is-4 has-text-centered has-text-white">
+		Ciculating amount: {supplyValues[supplyValues.length - 1].y}
+		{data.infos.ticker}
+	</p>
 	<Line
 		data={lineData}
 		options={{

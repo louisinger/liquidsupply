@@ -79,7 +79,7 @@ function toAsset(a: EsploraAsset): Asset {
 		assetHash: a.asset_id,
 		name: a.name,
 		ticker: a.ticker,
-		precision: a.precision || 0
+		precision: a.precision || 8
 	};
 }
 
