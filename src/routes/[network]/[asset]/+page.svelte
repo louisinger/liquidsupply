@@ -57,7 +57,7 @@
 <div class="container">
 	<p class="title is-3 has-text-centered has-text-white">Supply for {data.infos.name}</p>
 	<p class="subtitle is-4 has-text-centered has-text-white">
-		Ciculating amount: {supplyValues[supplyValues.length - 1].y}
+		{supplyValues[supplyValues.length - 1].y}
 		{data.infos.ticker}
 	</p>
 	<Line
